@@ -1,49 +1,74 @@
 services:
   geth-sepolia:
     container_name: geth-sepolia
+    user: 1000:1000
     image: ethereum/client-go:stable
+    restart: unless-stopped
     command:
       --sepolia
+      --authrpc.port=22551
       --ws
       --ws.addr=0.0.0.0
       --ws.origins="*"
+      --ws.port=22546
       --datadir=/data
       --http
       --http.addr=0.0.0.0
       --http.api="eth,net,engine,admin,txpool"
       --http.corsdomain="*"
       --http.vhosts="*"
+      --http.port=22545
+      --ipcdisable
       --authrpc.addr=0.0.0.0
       --authrpc.vhosts="*"
       --authrpc.jwtsecret=/jwt/jwtsecret
-      --bootnodes enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303
+      --syncmode full
+      --cache 4096
+      --metrics
+      --metrics.addr=0.0.0.0
+      --metrics.port=22660
+      --discovery.port=22303
     volumes:
-      - '/home/geth-data:/data'
-      - '/home/jwt:/jwt'
+      - './geth-data:/data'
+      - './jwt:/jwt'
     ports:
-      - '31303:30303'
-      - '31545:8545' #json-rpc endpoint
-      - '31546:8546' #wss endpoint
-      - '31547:8547'
-      - '31551:8551' #auth endpoint
+      - '22303:22303'
+      - '22545:22545' #json-rpc endpoint
+      - '22546:22546' #wss endpoint
+      - '22547:22547'
+      - '22551:22551' #auth endpoint
+      - '22660:22660' #metric
+    networks:
+      - cnid
   prysm-sepolia:
     container_name: prysm-sepolia
+    user: 1000:1000
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
+    restart: unless-stopped
     command: --datadir=/data
       --jwt-secret=/jwt/jwtsecret
       --rpc-host=0.0.0.0
       --grpc-gateway-host=0.0.0.0
       --monitoring-host=0.0.0.0
-      --execution-endpoint=http://geth-sepolia:8551
+      --execution-endpoint=http://geth-sepolia:22551
       --genesis-beacon-api-url=https://sepolia.beaconstate.info
       --checkpoint-sync-url=https://sepolia.beaconstate.info
       --enable-experimental-backfill=true
       --sepolia --accept-terms-of-use
+      --p2p-tcp-port=22300
+      --p2p-udp-port=22200
+      --grpc-gateway-port=22500
     volumes:
-      - '/home/prysm-data:/data'
-      - '/home/jwt:/jwt'
+      - "./prysm-data:/data"
+      - "./jwt:/jwt"
     ports:
-      - '31400:4000'
-      - '31500:3500' #beacon endpoint
-      - '31300:13000'
-      - '31200:12000/udp'
+      - '22400:22400'
+      - '22500:22500' #beacon endpoint
+      - '22300:22300'
+      - '22200:22200/udp'
+    networks:
+      - cnid
+
+networks:
+  cnid:
+    external: true

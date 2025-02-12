@@ -33,16 +33,19 @@
 ### Relogin to your server to take effect from usermod !!!
 
 ## Install and Run 
-- **Create necessary folders**
-    ```
-    mkdir /home/geth-data
-    mkdir /home/prysm-data
-    mkdir /home/jwt
-    ```
-- **Clone this repo to your server and start all docker containers**
+- **Clone this repo to your server**
     ```
     git clone https://github.com/CryptoNodeID/sepolia-eth.git
     cd sepolia-eth
+    ```
+- **Create necessary folders**
+    ```
+    mkdir -p $HOME/sepolia-eth/geth-data
+    mkdir -p $HOME/sepolia-eth/prysm-data
+    mkdir -p $HOME/sepolia-eth/jwt
+    ```
+- **Start all docker containers**
+    ```
     docker compose up -d
     ```
 - **To check the logs**
