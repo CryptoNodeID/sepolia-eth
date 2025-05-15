@@ -44,6 +44,10 @@
     mkdir -p $HOME/sepolia-eth/prysm-data
     mkdir -p $HOME/sepolia-eth/jwt
     ```
+- **Create the network**
+    ```
+    docker network create cnid 
+    ```
 - **Start all docker containers**
     ```
     docker compose up -d
