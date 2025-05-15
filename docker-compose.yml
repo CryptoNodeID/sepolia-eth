@@ -1,7 +1,9 @@
 services:
   geth-sepolia:
     container_name: geth-sepolia
-    user: 1000:1000
+    env_file:
+      - .env
+    user: "${UID}:${GID}"
     image: ethereum/client-go:stable
     restart: unless-stopped
     command:
@@ -42,9 +44,13 @@ services:
       - cnid
   prysm-sepolia:
     container_name: prysm-sepolia
-    user: 1000:1000
+    env_file:
+      - .env
+    user: "${UID}:${GID}"
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
     restart: unless-stopped
+    depends_on:
+      - geth-sepolia
     command: --datadir=/data
       --jwt-secret=/jwt/jwtsecret
       --rpc-host=0.0.0.0

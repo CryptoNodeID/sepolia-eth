@@ -44,6 +44,11 @@
     mkdir -p $HOME/sepolia-eth/prysm-data
     mkdir -p $HOME/sepolia-eth/jwt
     ```
+- **Create .env file with UID and GID**
+    ```
+    echo "UID=$(id -u)" >> .env
+    echo "GID=$(id -g)" >> .env
+    ```
 - **Create the network**
     ```
     docker network create cnid 
